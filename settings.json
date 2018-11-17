@@ -1,0 +1,17 @@
+{
+    "java.home": "C:\\Program Files (x86)\\Java\\jdk1.8.0_161",          //配置该项就可以进行java开发了，下面的配置都是支持maven使用的
+    "maven.executable.path": "F:\\maven\\apache-maven-3.5.4-bin\\apache-maven-3.5.4\bin\\mvn",
+    "java.configuration.maven.userSettings": "F:\\maven\\apache-maven-3.5.4-bin\\apache-maven-3.5.4\\confsettings.xml",
+    "maven.terminal.customEnv": [
+        {
+            "environmentVariable": "JAVA_HOME",      
+            "value": "C:\\Program Files (x86)\\Java\\jdk1.8.0_161"
+        }
+    ],
+    "python.pythonPath": "F:\\Anaconda3\\python.exe",
+    "C_Cpp.errorSquiggles": "Enabled",
+    "files.associations": {
+        "iostream": "cpp",
+        "ostream": "cpp"
+    }
+}

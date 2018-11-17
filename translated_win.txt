@@ -1,0 +1,163 @@
+WINDOWS PLATFORMS的注意事项
+?===============================
+
+?Windows目标可以归类为“本机”，即使用Windows API的目标
+?直接和“托管”，依赖POSIX兼容层。 “原生”
+?目标是VC- *（其中“VC”源于缩写Microsoft Visual C.
+?编译器）和mingw [64]。 “托管”平台是Cygwin和MSYS [2]。甚至
+?虽然后者不是OpenSSL团队直接支持的，但它是＃1
+?建立MinGW目标的热门选择。简而言之，MinGW构建
+?总是交叉编译。在Linux和Cygwin上，它们看起来完全一样
+?并要求--cross-compile-prefix选项。在MSYS [2]上，它已经解决了
+?而是通过放置在$ PATH上生成“MinGW二进制”代码的gcc。
+?这通常是混乱的根源。 “托管”应用程序“直播”
+?使用POSIX-y root，mount points，/ dev模拟文件系统名称空间
+?甚至/ proc。 MSYS2 shell的事实加剧了混乱
+?（或者更确切地说，模拟execve（2）调用）检查它即将发布的二进制文件
+?开始，如果发现*不*与MSYS2 POSIX-y链接，
+?看起来像文件名的命令行参数得到翻译
+?模拟名称空间为“native”。例如'/ c / some / where'变为
+?'c：\ some \ where'，'/ dev / null' - 'nul'。这造成了一种错觉
+?MSYS2 shell和“MinGW二进制”之间没有区别，但是
+?有。请记住，“MinGW二进制”“体验”Windows
+?系统与VC生成的系统完全相同，其本质
+?与后者无法区分。 （顺便说一句，这就是原因
+?它在引用中引用为“MinGW二进制”，就像它一样
+?它可以得到“原生”。）
+
+?Visual C ++构建，a.k.a。VC- *
+?==============================
+
+?要求详情
+?-------------------
+
+?除了INSTALL中列出的要求和说明外，
+?这些也是必需的：
+
+? - Perl我们建议使用ActiveState Perl
+???https://www.activestate.com/ActivePerl。另一种可行的选择
+???似乎是Strawberry Perl，http：//strawberryperl.com。
+???您还需要CPAN上提供的perl模块Text :: Template。
+???有关更多信息，请阅读NOTES.PERL。
+
+? - Microsoft Visual C编译器。由于我们无法全部测试，因此有
+???关于支持哪些版本的不可避免的不确定性。最新
+???肯定支持版本以及之前的几个版本。上
+???另一方面，最老的一个人不知道工作。之间的一切
+???落入尽力而为的类别。
+
+? - Netwide Assembler，a.k.a。NASM，可从https://www.nasm.us获得，
+???是必须的。请注意，NASM是唯一受支持的汇编程序。甚至
+???虽然微软提供的汇编程序不受支持，现代
+???通过持续集成来运行64位版本
+???VC-WIN64A-masm目标。
+
+
+?安装目录
+?------------------------
+
+?默认安装目录源自环境
+?变量。
+
+?对于VC-WIN32，使用以下默认值：
+
+?????PREFIX：％ProgramFiles（86）％\ OpenSSL
+?????OPENSSLDIR：％CommonProgramFiles（86）％\ SSL
+
+?对于VC-WIN64，使用以下默认值：
+
+?????PREFIX：％ProgramW6432％\ OpenSSL
+?????OPENSSLDIR：％CommonProgramW6432％\ SSL
+
+?这些环境变量是否不存在（在纯Win32上）
+?安装例子），使用这些后备：
+
+?????PREFIX：％ProgramFiles％\ OpenSSL
+?????OPENSSLDIR：％CommonProgramFiles％\ SSL
+
+?另请注意，即使这些目录通常也是写保护的
+?您的帐户位于Administrators组中。要解决这个问题，
+?通过右键单击它并选择“运行方式”来启动命令提示符
+?管理员“在运行'nmake install'之前。另一个解决方案
+?当然，通过使用选择一组不同的目录
+?配置时--prefix和--openssldir。
+
+?mingw和mingw64
+?=================
+
+?* MSYS2 shell和开发环境安装：
+
+???从https://msys2.github.io/下载MSYS2并按照安装进行操作
+???说明。一旦启动并运行安装甚至make，perl，（git if
+???需要，）mingw-w64-i686-gcc和/或mingw-w64-x86_64-gcc。你应该
+???在开始菜单上有相应的MinGW项目，使用*它们*，而不是
+???通用MSYS2。正如开场笔记所暗示的那样，它们之间存在差异
+???在$ PATH上找到第一个编译器。此时./config
+???应该识别正确的目标，滚动就好像它是Unix ...
+
+?*也可以在Linux或Cygwin上构建mingw [64]
+???使用相应的--cross-compile-prefix =选项进行配置。对于
+???例
+
+?????./Configure mingw --cross-compile-prefix = i686-w64-mingw32- ...
+
+???要么
+
+?????./Configure mingw64 --cross-compile-prefix = x86_64-w64-mingw32- ...
+
+???这自然意味着您已经安装了相应的附加组件
+???包。
+
+?链接您的应用程序
+?========================
+本节适用于所有“本机”构建。
+
+?如果您链接静态OpenSSL库，那么您应该这样做
+?另外将您的应用程序链接到WS2_32.LIB，GDI32.LIB，
+?ADVAPI32.LIB，CRYPT32.LIB和USER32.LIB。那些发展
+?非交互式服务应用程序可能会感到担心
+?与GDI32.LIB和USER32.LIB链接，因为它们是正确关联的
+?使用交互式桌面，无法提供服务
+?流程。该工具包旨在检测它的上下文
+?当前执行，GUI，控制台应用程序或服务，并相应地采取行动，
+?即是否实际进行GUI调用。另外那些
+?谁希望/DELAYLOAD:GDI32.DLL和/DAYAYLOAD:USER32.DLL和
+?实际上让他们关闭服务过程应该考虑实施
+?并从.exe图像导出自己的_OPENSSL_isservice没有
+?依赖于USER32.DLL。例如，在Windows Vista及更高版本中，您可以：
+
+__declspec（dllexport）__ cdecl BOOL _OPENSSL_isservice（void）
+{DWORD sess;
+if（ProcessIdToSessionId（GetCurrentProcessId（），＆sess））
+return sess == 0;
+返回FALSE;
+}
+
+?如果你与OpenSSL .DLLs链接，那么你应该包括
+?你的应用程序代码小“shim”片段，它提供之间的粘合剂
+?OpenSSL BIO层和编译器运行时。请参阅OPENSSL_Applink
+?手册页了解更多详情。
+
+?Cygwin，“托管”环境
+?============================
+
+?Cygwin在其上实现了Posix / Unix运行时系统（cygwin1.dll）
+?Windows子系统并提供了一个bash shell和GNU工具环境。
+?因此，使用Cygwin的OpenSSL几乎与之相同
+?Unix程序。
+
+?要使用Cygwin构建OpenSSL，您需要：
+
+?*安装Cygwin（参见https://cygwin.com/）
+
+?*安装Cygwin Perl并确保它在路径中。回想起那个
+???至少需要5.10.0。
+
+?*运行Cygwin bash shell
+
+?除此之外，请按照INSTALL中的Unix说明进行操作。
+
+?注意：“make test”和正常文件操作可能在目录中失败
+?由于Cygwin而挂载为文本（即mount -t c：\ somewhere / home）
+?剥离回车。为了避免这种情况，请确保二进制
+?例如，使用mount。 mount -b c：\ somewhere / home。
