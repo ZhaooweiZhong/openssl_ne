@@ -13,7 +13,7 @@
 
 <http://www.activestate.com/activeperl/downloads>
    但是实测这个网慢不说，基本上下到一半就boom了，建议使用腾讯的下载链接：
-   <https://pc.qq.com/detail/12/detail_3012.html>
+   <https://pc.qq.com/detail/12/detail_3012.html>。也可以使用我在github上传的perlactive版本，来自腾讯下载。
    下载之后需要配置好Perl的环境：我的电脑->右键属性->高级系统设置->环境变量 找到path,双击，将安装的perl的bin目录添加到path中，如图：
 
 ![perl环境](1perl环境.png "perl环境设置")
