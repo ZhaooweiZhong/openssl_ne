@@ -1,12 +1,11 @@
-#<center>win10环境下编译方式配置openssl</center>
+# <center>win10环境下编译方式配置openssl</center>
 <center>zzw经过反复尝试的实测安装openssl打开方式</center>
 <font size=4 face="楷体">
     <br/>&#160;&#160;&#160;&#160;最近在配置openssl环境，网上一大堆的教程都不一样，并且很多已经不适合openssl的现在情况下的配置。网上的直接安装的openssl的做法很简单，但在使用代码的时候会缺少库libeay32.lib 和ssleay32.lib等一系列的lib库而不能真正运行最后的给出的代码。经过一周的摸索与亲自的实践，现在把整个配置环境的做法张贴上来，以供参考。（编译完成的code也已经放到github上供直接下载）
     <br/>&#160;&#160;&#160;&#160;这里有一篇简介：在Windows、Linux、Mac系统上的编译步骤,主要的构建过程比较来看比较靠谱，但是我用不了，小伙伴们可以试一试能不能参考这篇文章进行配置：
     <https://www.linuxidc.com/Linux/2014-10/108502.htm>
-    <br/>&#160;&#160;&#160;&#160;本人主要的方法参考于openssl自带的notes.win以及install，在openssl下可以找到，也一并放在了我的github下。经过翻译版同样在目录之下，名为：translated_win.txt。下面进入正文：
-</font>
-##<font color="#dd00dd" size=5 face="楷体">软件配置</font>
+    <br/>&#160;&#160;&#160;&#160;本人主要的方法参考于openssl自带的notes.win以及install，在openssl下可以找到，也一并放在了我的github下。经过翻译版同样在目录之下，名为：translated_win.txt。下面进入正文:</br>
+## 软件配置</br>
 <font size=4 face="楷体">
 1. Perl
    <br/>&#160;&#160;&#160;&#160;建议使用ActiveState Perl,地址如下
@@ -37,7 +36,7 @@
 </font>
 
 </font>
-##<font color="#dd00dd" size=5 face="楷体">正式安装</font>
+## <font color="#dd00dd" size=5 face="楷体">正式安装</font>
 <font size=4 face="楷体">
 &#160;&#160;&#160;&#160;1.  打开vs的开发者模式命令窗口，在开始菜单中打开。VS2017的开发者窗口名为：developer command prompt for 2017。在这个窗口中打开openssl的安装包的解压的地方。使用perl语言进行解压，代码为
 
@@ -90,7 +89,7 @@ nmake install
 &#160;&#160;&#160;&#160;这样直接编译还是会报错，缺失libcrypto-1_1.dll，这里需要把Openssl里的bin文件夹中的libcrypto-1_1.dll,libssl-1_1.dll两个文件拷到工作目录文件夹与工程同名的文件夹里面，跟.h文件，.cpp文件放在一起。
 </font>
 </font>
-##<font color="#dd00dd" size=5 face="楷体">代码测试</font>
+## <font color="#dd00dd" size=5 face="楷体">代码测试</font>
 <font size=4 face="楷体">
 &#160;&#160;&#160;&#160;本段测试代码用于测试本次的openssl是否能够返回正常的内容：
 
